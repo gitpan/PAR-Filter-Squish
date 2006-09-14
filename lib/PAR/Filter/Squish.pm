@@ -2,7 +2,7 @@ package PAR::Filter::Squish;
 
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use Perl::Squish;
 use base 'PAR::Filter';
@@ -27,6 +27,15 @@ Do not expect miracles. Unless you include B<a lot> of modules,
 the major component of a binary produced by C<pp> will be
 shared object files and the perl run-time.
 
+=head1 METHODS
+
+=head2 apply
+
+Class method which applies the filter to source code. Expects a reference
+to the code string as first argument optionally followed by file and
+module name. Those names are particularily accepted for compatibility to
+other PAR filters.
+
 =cut
 
 sub apply {
@@ -49,6 +58,8 @@ sub apply {
 1;
 
 =head1 SEE ALSO
+
+L<PAR>
 
 L<PAR::Filter>
 
