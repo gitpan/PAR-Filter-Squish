@@ -2,7 +2,7 @@ package PAR::Filter::Squish;
 
 use strict;
 use vars qw/$VERSION/;
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use Perl::Squish;
 use base 'PAR::Filter';
@@ -41,6 +41,7 @@ other PAR filters.
 sub apply {
     my ($class, $ref, $filename, $name) = @_;
 
+    return if $filename =~ /\.bs$/i;
     no warnings 'uninitialized';
 
     my $data = '';
@@ -48,7 +49,17 @@ sub apply {
 
     my $doc = PPI::Document->new($ref);
     my $trafo = Perl::Squish->new();
+    if (not defined $doc) {
+      warn __PACKAGE__ . ": Could not parse '$filename' using PPI!";
+      $$ref .= $data;
+      return;
+    }
     $trafo->apply($doc);
+    if (not defined $doc) {
+      warn __PACKAGE__ . ": Could not apply transformation to '$filename'!";
+      $$ref .= $data;
+      return;
+    }
 
     $$ref = $doc->serialize();
     
@@ -77,7 +88,7 @@ Please submit bug reports to E<lt>bug-par-filter-squish@rt.cpan.orgE<gt>.
 
 =head1 COPYRIGHT
 
-Copyright 2006 by Steffen Mueller E<lt>smueller@cpan.orgE<gt>.
+Copyright 2006-2008 by Steffen Mueller E<lt>smueller@cpan.orgE<gt>.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
